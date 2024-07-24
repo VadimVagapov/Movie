@@ -1,0 +1,22 @@
+# .iml files
+*.iml
+
+# File-based project format
+*.ipr
+*.iws
+*.ids
+
+# all files in .idea directory
+.idea
+
+# IntelLij
+/out/
+
+# target directory
+**/target/
+**/logs/
+**/log/
+**/build
+
+# gradle
+.gradle

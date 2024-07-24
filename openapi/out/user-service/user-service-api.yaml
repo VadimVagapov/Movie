@@ -1,0 +1,270 @@
+openapi: 3.0.3
+info:
+  title: Работа с пользователями
+  version: 1.0.0
+  description: Описание rest методов по работе с пользователями
+  contact:
+    name: Vadim Vagapov
+servers:
+  - url: 'http://localhost:8080'
+    description: 'Локальный сервер'
+paths:
+  /user-service/v1/user:
+    put:
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+        required: true
+      tags:
+        - userService
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtendedUserResponse'
+          description: Успешно изменили данные по пользователю
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtendedUserResponse'
+          description: Ошибка в запросе
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtendedUserResponse'
+          description: Пользователь не найден
+        500:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtendedUserResponse'
+          description: Внутренняя ошибка сервера
+      operationId: updateUser
+      summary: Изменить данные по пользователю
+components:
+  schemas:
+    ExtendedUserResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/UserDataResponse'
+        error:
+          $ref: '#/components/schemas/ErrorResponse'
+        validation:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationModel'
+    UserDataResponse:
+      required:
+        - userId
+        - userGuid
+        - version
+        - deleted
+        - user
+      type: object
+      properties:
+        userGuid:
+          format: uuid
+          description: GUID пользователя
+          type: string
+        version:
+          format: int32
+          description: Версия пользователя
+          type: integer
+        deleted:
+          description: Признак удаленного пользователя
+          type: boolean
+          example: 'false'
+        user:
+          $ref: '#/components/schemas/UserResponse'
+    UserResponse:
+      type: object
+      properties:
+        lastName:
+          description: Фамилия
+          maxLength: 50
+          type: string
+          example: Исянгулов
+        firstName:
+          description: Имя
+          maxLength: 50
+          type: string
+          example: Ильгам
+        middleName:
+          description: Отчество
+          maxLength: 50
+          type: string
+          example: Даянович
+        fullName:
+          description: ФИО
+          maxLength: 255
+          type: string
+          example: Исянгулов Ильгам Даянович
+        birthDate:
+          format: date
+          description: Дата рождения
+          type: string
+          example: "2000-10-12"
+        birthPlace:
+          description: Место рождения
+          maxLength: 500
+          type: string
+          example: г. Уфа
+        sex:
+          $ref: '#/components/schemas/Sex'
+        citizenshipCode:
+          description: Буквенный код страны гражданства
+          maxLength: 3
+          minLength: 3
+          type: string
+          example: RUS
+#        documents:
+#          type: array
+#          items:
+#            $ref: '#components/schemas/DocumentResponse'
+#        contacts:
+#          type: array
+#          items:
+#            $ref: '#components/schemas/ContactResponse'
+#        addresses:
+#          type: array
+#          items:
+#            $ref: '#components/schemas/AddressResponse'
+    Sex:
+      description: Пол, М - мужчина, F - женщина
+      enum:
+        - M
+        - F
+      type: string
+    ErrorResponse:
+      required:
+        - code
+      type: object
+      properties:
+        code:
+          description: Строковый код ошибки
+          type: string
+          example: validation_error
+        detail:
+          $ref: '#/components/schemas/ErrorDetail'
+        message:
+          description: Сообщение об ошибке
+          type: string
+          example: Ошибка в запросе
+        shortMassage:
+          description: Краткое сообщение об ошибке
+          type: string
+          example: Поле обязательное для заполнения
+        level:
+          description: Тип ошибки
+          enum:
+            - ERROR
+            - WARN
+          type: string
+    ErrorDetail:
+      required:
+        - key
+          value
+      type: object
+      properties:
+        key:
+          description: Ключ
+          type: string
+          example: field
+        value:
+          description: Значение
+          type: string
+          example: userId
+    ValidationModel:
+      description: Ошибка валидации
+      required:
+        - fieldName
+        - errorType
+        - errorMessage
+      type: object
+      properties:
+        fieldName:
+          description: Имя поля
+          type: string
+        errorMessage:
+          description: Текст сообщения об ошибке
+          type: string
+        errorType:
+          description: Тип ошибки
+          enum:
+            - ERROR
+            - WARNING
+          type: string
+    UpdateUser:
+      type: object
+      required:
+        - userGuid
+        - version
+        - user
+      properties:
+        userGuid:
+          format: uuid
+          description: Guid пользователя
+          type: string
+        version:
+          description: Версия пользователя
+          type: integer
+          example: '0'
+        user:
+          $ref: '#/components/schemas/UserRequest'
+    UserRequest:
+      type: object
+      properties:
+        lastName:
+          description: Фамилия
+          maxLength: 50
+          type: string
+          example: Исянгулов
+        firstName:
+          description: Имя
+          maxLength: 50
+          type: string
+          example: Ильгам
+        middleName:
+          description: Отчество
+          maxLength: 50
+          type: string
+          example: Даянович
+        fullName:
+          description: ФИО
+          maxLength: 255
+          type: string
+          example: Исянгулов Ильгам Даянович
+        birthDate:
+          format: date
+          description: Дата рождения
+          type: string
+          example: "2000-10-12"
+        birthPlace:
+          description: Место рождения
+          maxLength: 500
+          type: string
+          example: г. Уфа
+        sex:
+          $ref: '#/components/schemas/Sex'
+        citizenshipCode:
+          description: Буквенный код страны гражданства
+          maxLength: 3
+          minLength: 3
+          type: string
+          example: RUS
+    UpdateUserRequest:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/UpdateUser'
+
+
+
