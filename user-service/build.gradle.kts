@@ -45,6 +45,12 @@ dependencies {
     implementation("org.openapitools:openapi-generator:6.6.0")
     implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 
+    //Liquibase для БД
+    implementation("org.liquibase:liquibase-core:4.24.0")
+
+    //jcache
+    implementation("org.hibernate.orm:hibernate-jcache:6.4.4.Final")
+
     //Common
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
@@ -58,12 +64,11 @@ dependencies {
 
     compileOnly("org.projectlombok:lombok:1.18.24")
     annotationProcessor("org.projectlombok:lombok:1.18.24")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:${springVersion}")
     testImplementation("org.springframework.boot:spring-boot-starter-test:${springVersion}")
     testImplementation("org.springframework.kafka:spring-kafka-test:${springVersion}")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
-
-tasks.register("prepareKotlinBuildScriptModel"){}
 
 val coverageExclusions = listOf(
     "**/*Application.class",
@@ -133,4 +138,21 @@ tasks {
     jar {
         enabled = false
     }
+
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
+
+    withType<Test> {
+        systemProperty("file.encoding", "UTF-8")
+    }
+
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+        }
+    }
+
+    register("prepareKotlinBuildScriptModel"){}
 }

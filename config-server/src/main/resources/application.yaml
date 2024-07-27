@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/VadimVagapov/config
+          skipSslValidation: true
+          force-pull: true
+
+server:
+  port: 8111
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

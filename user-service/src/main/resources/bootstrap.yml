@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: user-server
+  cloud:
+    config:
+      enabled: true
+      uri: http://localhost:8111
+      import-check:
+        enabled: false
+    loadbalancer:
+      ribbon:
+        enabled: false
